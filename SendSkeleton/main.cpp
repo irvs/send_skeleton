@@ -11,6 +11,15 @@
 
 #include "SkeletonSender.h"
 
+const char* IP_LIST[] = {
+  "192.168.4.155",
+  "192.168.4.156",
+  "192.168.4.157",
+  "192.168.4.158",
+  "192.168.4.159",
+  "192.168.4.160"
+};
+
 template<class Interface> inline void SafeRelease( Interface *& pInterfaceToRelease )
 {
 	if( pInterfaceToRelease != NULL ){
@@ -21,8 +30,18 @@ template<class Interface> inline void SafeRelease( Interface *& pInterfaceToRele
 
 int main(int argc, char **argv)
 {
-  //SkeletonSender instance("192.168.4.157");
-  SkeletonSender instance("192.168.4.101");
+  if (argc != 2)
+  {
+    std::cout << "Please set IP address for first argument." << std::endl;
+    return -1;
+  }
+  int ip_index = atoi(argv[1]) - 1;
+  if (ip_index < 0 || ip_index >= 6)
+  {
+    std::cout << "Given invalid argument. Input camera ID." << std::endl;
+    return -2;
+  }
+  SkeletonSender instance(IP_LIST[ip_index]);
 
   cv::setUseOptimized(true);
 
