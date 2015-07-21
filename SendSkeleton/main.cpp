@@ -33,12 +33,22 @@ int main(int argc, char **argv)
   if (argc != 2)
   {
     std::cout << "Please set IP address for first argument." << std::endl;
+    std::cout << "IP list ===" << std::endl;
+    for (int i = 0; i < 6; i++)
+    {
+      std::cout << i+1 << ": " << IP_LIST[i] << std::endl;
+    }
     return -1;
   }
   int ip_index = atoi(argv[1]) - 1;
   if (ip_index < 0 || ip_index >= 6)
   {
-    std::cout << "Given invalid argument. Input camera ID." << std::endl;
+    std::cout << "Given invalid argument. Input the ID of sending PC." << std::endl;
+    std::cout << "IP list ===" << std::endl;
+    for (int i = 0; i < 6; i++)
+    {
+      std::cout << i+1 << ": " << IP_LIST[i] << std::endl;
+    }
     return -2;
   }
   SkeletonSender instance(IP_LIST[ip_index]);

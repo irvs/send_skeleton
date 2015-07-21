@@ -439,7 +439,7 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
         cv::circle(progress, cv::Point(pattern_depth.X, pattern_depth.Y), 1, cv::Scalar(255, 128, 0));
       }
       cv::imshow("viewer", progress);
-      cv::waitKey(1000);
+      //cv::waitKey(1000);
     }
   }
 

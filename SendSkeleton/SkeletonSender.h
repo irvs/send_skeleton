@@ -1,7 +1,7 @@
 #ifndef SKELETON_SENDER_H_
 #define SKELETON_SENDER_H_
 
-#define PORT_NUM 10000
+#define PORT_NUM 49552
 #define QUEUE_SIZE 6
 
 #include <queue>
