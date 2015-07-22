@@ -117,6 +117,8 @@ inline void draw_axis(
 
 void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
 {
+  char key;
+
   // Detect corner of chessboard
   std::vector<cv::Point2f> corners;
   bool pattern_found;
@@ -169,8 +171,9 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
 	cv::Mat frameMat( frame.height / 2, frame.width / 2, CV_8UC4 );
   cv::resize(img, frameMat, cv::Size(), 0.5, 0.5);
   cv::imshow("Frame", frameMat);
-  std::cout << "If you want to reverse corners, push \'s\' on the CV window." << std::endl;
-  if ((cv::waitKey(0) & 0x00ff) == 's')
+  std::cout << "Do you want to reverse corners? [y/N]: ";
+  key = 'n';
+  if (key == 'y' | key == 'Y')
   {
     std::cout << "Array of detected corners are reversed." << std::endl;
     std::reverse(std::begin(corners), std::end(corners));
@@ -471,8 +474,9 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
 
   cv::imshow("viewer", viewer);
 
-  // Choose attribution after calibration
-  int key = cv::waitKey(0);
+  // Choose behavior after calibration
+  std::cout << "Choose behavior [wq]: ";
+  std::cin.get(key);
   if ('w' == key & 0x00ff)
   {
     translation = POINT3(d_x, d_y, d_z);
@@ -578,7 +582,6 @@ void Calibration::exportXML()
     std::cout << "Failed to write XML file." << std::endl;
   }
   std::cout << std::endl;
-  cv::waitKey(0);
 
   return;
 }

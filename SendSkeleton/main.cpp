@@ -4,6 +4,8 @@
  * I modified a bit.
  */
 
+#define USE_CUI 0x00
+
 #include <Kinect.h>
 #include <opencv2/opencv.hpp>
 
@@ -116,7 +118,10 @@ int main(int argc, char **argv)
 
   cv::Mat bufferMat(height, width, CV_8UC4);
   cv::Mat bodyMat(height / 2, width / 2, CV_8UC4);
-  cv::namedWindow("Body");
+  if (!USE_CUI)
+  {
+    cv::namedWindow("Body");
+  }
 
   // Color Table
   cv::Vec3b color[BODY_COUNT];
@@ -184,13 +189,19 @@ int main(int argc, char **argv)
       }
     }
 
-    cv::imshow("Body", bodyMat);
+    if (!USE_CUI)
+    {
+      cv::imshow("Body", bodyMat);
+    }
 
     SafeRelease(pColorFrame);
     SafeRelease(pBodyFrame);
 
-    if (cv::waitKey(100) == VK_ESCAPE) {
-      break;
+    if (!USE_CUI)
+    {
+      if (cv::waitKey(100) == VK_ESCAPE) {
+        break;
+      }
     }
   }
 
