@@ -1,5 +1,5 @@
 #include <iostream>
-#include <opencv2/opencv.hpp>
+#include <string>
 
 #include "SkeletonReceiver.h"
 
@@ -9,7 +9,8 @@ SkeletonReceiver::SkeletonReceiver(unsigned short port_num)
   memset(&sockAddrIn, 0, sizeof(sockAddrIn));
   sockAddrIn.sin_port = htons(port);
   sockAddrIn.sin_family = AF_INET;
-  sockAddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
+  //sockAddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
+  sockAddrIn.sin_addr.s_addr = inet_addr("192.168.4.162");
 
   if (WSAStartup(MAKEWORD(2, 0), &wsadata) != 0)
   {
@@ -29,6 +30,8 @@ SkeletonReceiver::SkeletonReceiver(unsigned short port_num)
     closesocket(sockRecv);
     exit(-3);
   }
+  std::cout << "Host IP: " << htonl(INADDR_ANY) << std::endl;
+  std::cout << "Port : " << port << std::endl;
 
   return;
 }
@@ -42,18 +45,15 @@ SkeletonReceiver::~SkeletonReceiver()
   return;
 }
 
-void SkeletonReceiver::receive(SendingSkeleton &out)
+void SkeletonReceiver::receive()
 {
-  memset((void*)&out, 0, sizeof(SendingSkeleton));
-  int ilen = recvfrom(sockRecv, (char*)&out, sizeof(SendingSkeleton)/sizeof(char), 0, NULL, NULL);
+  char *recv_data;
+  recv_data = (char*)malloc(sizeof(char) * 16383);
+  int ilen = recvfrom(sockRecv, (char*)recv_data, 16383/sizeof(char), 0, NULL, NULL);
   if (ilen > 0)
   {
-    std::cout << "Data Received:: ID -> " << (int)out.id << std::endl <<
-      "\t1st joint position (" <<
-      out.joints[0].Position.X << ", " <<
-      out.joints[0].Position.Y << ", " <<
-      out.joints[0].Position.Z << ")" <<
-      std::endl;
+	  std::cout << "Received data size: " << ilen << std::endl;
   }
+  free(recv_data);
   return;
 }
