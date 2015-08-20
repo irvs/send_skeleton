@@ -87,7 +87,7 @@ inline void calcurate_error(
 }
 
 template<class TYPE>
-inline void draw_axis(
+inline void Calibration::draw_axis(
   const Eigen::Matrix<TYPE, 3, 1>& axis,
   const Eigen::Matrix<TYPE, 3, 1>& origin,
   cv::Mat& img,
@@ -98,9 +98,9 @@ inline void draw_axis(
   CameraSpacePoint origin_camera;
   DepthSpacePoint axis_depthframe;
   DepthSpacePoint origin_depthframe;
-  axis_camera.X = (axis*(float)PATTERN_WIDTH + origin)[0];
-  axis_camera.Y = (axis*(float)PATTERN_WIDTH + origin)[1];
-  axis_camera.Z = (axis*(float)PATTERN_WIDTH + origin)[2];
+  axis_camera.X = (axis*(float)pattern_width + origin)[0];
+  axis_camera.Y = (axis*(float)pattern_width + origin)[1];
+  axis_camera.Z = (axis*(float)pattern_width + origin)[2];
   origin_camera.X = origin[0];
   origin_camera.Y = origin[1];
   origin_camera.Z = origin[2];
@@ -359,7 +359,7 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
   {
     world_axis_z = -world_axis_z;
   }
-  world_axis_z = world_axis_z.normalized() * (float)PATTERN_WIDTH;
+  world_axis_z = world_axis_z.normalized() * (float)pattern_width;
 
   // Estimate other 4 parameters
   POINT3 model_pattern[PATTERN_ROWS*PATTERN_COLS];
@@ -369,7 +369,7 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
       for (int x = 0; x < PATTERN_COLS; x++)
       {
         model_pattern[x + y*PATTERN_COLS] =
-          POINT3(x*(float)PATTERN_WIDTH, y*(float)PATTERN_WIDTH, 0.0);
+          POINT3(x*(float)pattern_width, y*(float)pattern_width, 0.0);
       }
     }
   }
@@ -439,7 +439,7 @@ void Calibration::core_calcuration(cv::Mat& img, cv::Mat& depth_img)
         cv::circle(progress, cv::Point(pattern_depth.X, pattern_depth.Y), 1, cv::Scalar(255, 128, 0));
       }
       cv::imshow("viewer", progress);
-      //cv::waitKey(1000);
+      cv::waitKey(10);
     }
   }
 
@@ -583,8 +583,9 @@ void Calibration::exportXML()
   return;
 }
 
-Calibration::Calibration(SENSOR camera) :
-  sensor(camera)
+Calibration::Calibration(SENSOR camera, float pattern_width) :
+  sensor(camera),
+  pattern_width(pattern_width)
 {
   frame.type = COLOR;
 #ifdef USING_KINECT_V2

@@ -9,8 +9,7 @@ SkeletonReceiver::SkeletonReceiver(unsigned short port_num)
   memset(&sockAddrIn, 0, sizeof(sockAddrIn));
   sockAddrIn.sin_port = htons(port);
   sockAddrIn.sin_family = AF_INET;
-  //sockAddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
-  sockAddrIn.sin_addr.s_addr = inet_addr("192.168.4.162");
+  sockAddrIn.sin_addr.s_addr = htonl(INADDR_ANY);
 
   if (WSAStartup(MAKEWORD(2, 0), &wsadata) != 0)
   {

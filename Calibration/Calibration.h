@@ -6,7 +6,6 @@
 
 #define PATTERN_COLS 5
 #define PATTERN_ROWS 6
-#define PATTERN_WIDTH 0.178 // [m]
 
 #define INVALID_PIXEL_VALUE 0
 
@@ -41,7 +40,7 @@ typedef IKinectSensor* SENSOR;
 class Calibration
 {
 public:
-  Calibration(SENSOR camera);
+  Calibration(SENSOR camera, float pattern_width);
   ~Calibration();
 
   void run();
@@ -55,7 +54,13 @@ private:
   POINT3 translation;
   QUATERNION rotation;
 
+  float pattern_width;
+
   void core_calcuration(cv::Mat& img, cv::Mat& depth_img);
+  template<class TYPE> inline void draw_axis(
+    const Eigen::Matrix<TYPE, 3, 1>& axis,
+    const Eigen::Matrix<TYPE, 3, 1>& origin,
+    cv::Mat& img, const cv::Scalar& color, ICoordinateMapper *mapper);
   void exportXML();
 
 #ifdef USING_KINECT_V2
