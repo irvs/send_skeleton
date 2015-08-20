@@ -4,7 +4,7 @@
  * I modified a bit.
  */
 
-#define USE_CUI 0x00
+#include <string>
 
 #include <Kinect.h>
 #include <opencv2/opencv.hpp>
@@ -13,14 +13,12 @@
 
 #include "SkeletonSender.h"
 
-const char* IP_LIST[] = {
-  "192.168.4.155",
-  "192.168.4.156",
-  "192.168.4.157",
-  "192.168.4.158",
-  "192.168.4.159",
-  "192.168.4.160"
-};
+void usage()
+{
+  std::cout << "Usage:" << std::endl;
+  std::cout << "\tSendSkeleton.exe [destinationIP]" << std::endl;
+  return;
+}
 
 template<class Interface> inline void SafeRelease( Interface *& pInterfaceToRelease )
 {
@@ -34,26 +32,17 @@ int main(int argc, char **argv)
 {
   if (argc != 2)
   {
-    std::cout << "Please set IP address for first argument." << std::endl;
-    std::cout << "IP list ===" << std::endl;
-    for (int i = 0; i < 6; i++)
-    {
-      std::cout << i+1 << ": " << IP_LIST[i] << std::endl;
-    }
+    usage();
     return -1;
   }
-  int ip_index = atoi(argv[1]) - 1;
-  if (ip_index < 0 || ip_index >= 6)
+  std::string destination(argv[1]);
+  if (destination.length() < 7 ||
+    destination.length() > 15)
   {
-    std::cout << "Given invalid argument. Input the ID of sending PC." << std::endl;
-    std::cout << "IP list ===" << std::endl;
-    for (int i = 0; i < 6; i++)
-    {
-      std::cout << i+1 << ": " << IP_LIST[i] << std::endl;
-    }
+    std::cout << "Please enter the destination IP address(v4) to first argument." << std::endl;
     return -2;
   }
-  SkeletonSender instance(IP_LIST[ip_index]);
+  SkeletonSender instance(destination.c_str());
 
   cv::setUseOptimized(true);
 
@@ -118,10 +107,7 @@ int main(int argc, char **argv)
 
   cv::Mat bufferMat(height, width, CV_8UC4);
   cv::Mat bodyMat(height / 2, width / 2, CV_8UC4);
-  if (!USE_CUI)
-  {
-    cv::namedWindow("Body");
-  }
+  cv::namedWindow("Body");
 
   // Color Table
   cv::Vec3b color[BODY_COUNT];
@@ -189,19 +175,13 @@ int main(int argc, char **argv)
       }
     }
 
-    if (!USE_CUI)
-    {
-      cv::imshow("Body", bodyMat);
-    }
+    cv::imshow("Body", bodyMat);
 
     SafeRelease(pColorFrame);
     SafeRelease(pBodyFrame);
 
-    if (!USE_CUI)
-    {
-      if (cv::waitKey(100) == VK_ESCAPE) {
-        break;
-      }
+    if (cv::waitKey(100) == VK_ESCAPE) {
+      break;
     }
   }
 
