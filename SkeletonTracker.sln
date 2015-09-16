@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SkeletonTracker", "SkeletonTracker\SkeletonTracker.vcxproj", "{5B3E3CFD-1FE2-41FD-8417-981C93551F4E}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReceiveSkeleton", "ReceiveSkeleton\ReceiveSkeleton.vcxproj", "{4A6A101A-1C4C-46D8-8966-BCD8C5E2964C}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calibration", "Calibration\Calibration.vcxproj", "{705440AC-5C16-4437-B1AB-EED6E417CF14}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FaceDetection", "FaceDetection\FaceDetection.vcxproj", "{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,18 @@ Global
 		{705440AC-5C16-4437-B1AB-EED6E417CF14}.Release|x64.Build.0 = Release|x64
 		{705440AC-5C16-4437-B1AB-EED6E417CF14}.Release|x86.ActiveCfg = Release|Win32
 		{705440AC-5C16-4437-B1AB-EED6E417CF14}.Release|x86.Build.0 = Release|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Debug|x64.ActiveCfg = Debug|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Debug|x64.Build.0 = Debug|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Debug|x86.ActiveCfg = Debug|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Debug|x86.Build.0 = Debug|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Redist|x64.ActiveCfg = Release|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Redist|x64.Build.0 = Release|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Redist|x86.ActiveCfg = Release|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Redist|x86.Build.0 = Release|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Release|x64.ActiveCfg = Release|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Release|x64.Build.0 = Release|x64
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Release|x86.ActiveCfg = Release|Win32
+		{FDBE2EC4-F5DE-4B3D-A489-5C95CE07161D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
