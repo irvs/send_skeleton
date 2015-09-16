@@ -8,9 +8,10 @@
 #include <iostream>
 
 #include<iostream>
-#include<opencv2/opencv.hpp>
 #include<Kinect.h>
 #include<Windows.h>
+
+#include"Facedetector.h"
 
 const char *kFaceDetectorData[] = {
   "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_default.xml",
@@ -31,51 +32,9 @@ inline void SafeRelease( Interface **ppInterfaceToRelease )
 }
 
 //------------------------------------------------------------------------------
-class FaceDetecter
-{
-public:
-  FaceDetecter(const char* data);
-  ~FaceDetecter();
-
-  void check(const cv::Mat& src, std::vector<cv::Rect>& faces);
-
-private:
-  cv::CascadeClassifier face_cascade_;
-};
-
-//------------------------------------------------------------------------------
-FaceDetecter::FaceDetecter(const char* data)
-{
-  if (!face_cascade_.load(data))
-  {
-    std::cerr << "Failed to load file: " << data << std::endl;
-    exit(-1);
-  }
-  return;
-}
-
-//------------------------------------------------------------------------------
-FaceDetecter::~FaceDetecter()
-{
-  return;
-}
-
-//------------------------------------------------------------------------------
-void FaceDetecter::check(const cv::Mat& src, std::vector<cv::Rect>& faces)
-{
-  cv::Mat src_gray;
-  cv::cvtColor(src, src_gray, CV_RGB2GRAY);
-  cv::equalizeHist(src_gray, src_gray);
-
-  face_cascade_.detectMultiScale(src_gray, faces, 1.1, 2, 0|CV_HAAR_SCALE_IMAGE, cv::Size(30,30));
-
-  return;
-}
-
-//------------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
-  FaceDetecter detector(kFaceDetectorData[0]);
+  FaceDetector detector(kFaceDetectorData[0]);
   std::vector<cv::Rect> faces;
 
   cv::setUseOptimized( true );
