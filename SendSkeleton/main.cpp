@@ -11,8 +11,16 @@
 
 #include <Windows.h>
 
+#include "../FaceDetection/FaceDetector.h"
 #include "SkeletonSender.h"
 
+const char *kFaceDetectorData[] = {
+  "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_default.xml",
+  "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_alt.xml",
+  "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_alt2.xml"
+};
+
+//-----------------------------------------------------------------------------
 void usage()
 {
   std::cout << "Usage:" << std::endl;
@@ -20,6 +28,7 @@ void usage()
   return;
 }
 
+//-----------------------------------------------------------------------------
 template<class Interface> inline void SafeRelease( Interface *& pInterfaceToRelease )
 {
 	if( pInterfaceToRelease != NULL ){
@@ -28,6 +37,7 @@ template<class Interface> inline void SafeRelease( Interface *& pInterfaceToRele
 	}
 }
 
+//-----------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
   if (argc != 2)
@@ -126,6 +136,8 @@ int main(int argc, char **argv)
     return -1;
   }
 
+  FaceDetector face_detector(kFaceDetectorData[0]);
+
   while (1) {
     // Frame
     IColorFrame* pColorFrame = nullptr;
@@ -157,6 +169,40 @@ int main(int argc, char **argv)
                 int x = static_cast<int>(colorSpacePoint.X);
                 int y = static_cast<int>(colorSpacePoint.Y);
                 if ((x >= 0) && (x < width) && (y >= 0) && (y < height)) {
+                  if (type == JointType::JointType_Head)
+                  {
+                    std::vector<cv::Rect> faces;
+                    float face_size = 0.30 / 2.0;  // Unit: [m]
+
+                    // Calculate rectangle region in color frame
+                    CameraSpacePoint leftup_cam = joint[JointType::JointType_Head].Position;
+                    CameraSpacePoint rightdown_cam = joint[JointType::JointType_Head].Position;
+                    leftup_cam.X -= face_size;
+                    leftup_cam.Y += face_size;
+                    rightdown_cam.X += face_size;
+                    rightdown_cam.Y -= face_size;
+                    ColorSpacePoint leftup_color;
+                    ColorSpacePoint rightdown_color;
+                    pCoordinateMapper->MapCameraPointToColorSpace(leftup_cam, &leftup_color);
+                    pCoordinateMapper->MapCameraPointToColorSpace(rightdown_cam, &rightdown_color);
+
+                    cv::Point leftup(
+                      (leftup_color.X < 0 ? 0 : leftup_color.X),
+                      (leftup_color.Y < 0 ? 0 : leftup_color.Y));
+                    cv::Point rightdown(
+                      (rightdown_color.X >= bufferMat.cols ? bufferMat.cols-1 : rightdown_color.X),
+                      (rightdown_color.Y >= bufferMat.rows ? bufferMat.rows-1 : rightdown_color.Y));
+
+                    cv::rectangle(bufferMat, leftup, rightdown, static_cast<cv::Scalar>(color[count]));
+                    face_detector.check(
+                      cv::Mat(bufferMat, cv::Rect(leftup.x, leftup.y, rightdown.x-leftup.x, rightdown.y-leftup.y)), faces);
+                    // View detection result
+                    for (size_t i = 0; i < faces.size(); i++)
+                    {
+                      cv::Point center(leftup.x + faces[i].x + faces[i].width*0.5, leftup.y + faces[i].y + faces[i].height*0.5);
+                      cv::ellipse(bufferMat, center, cv::Size(faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, cv::Scalar(255, 255, 255), 4, 8, 0);
+                    }
+                  }
                   cv::circle(bufferMat, cv::Point(x, y), 5, static_cast<cv::Scalar>(color[count]));
                 }
               }
