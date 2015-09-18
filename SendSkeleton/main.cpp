@@ -4,7 +4,10 @@
  * I modified a bit.
  */
 
+//#define _REDIST  // Activate when you build program for distribution.
+
 #include <string>
+#include <limits>
 
 #include <Kinect.h>
 #include <opencv2/opencv.hpp>
@@ -15,9 +18,15 @@
 #include "SkeletonSender.h"
 
 const char *kFaceDetectorData[] = {
+#ifdef _REDIST
+  ".\\OpenCV\\haarcascades\\haarcascade_frontalface_default.xml",
+  ".\\OpenCV\\haarcascades\\haarcascade_frontalface_alt.xml",
+  ".\\OpenCV\\haarcascades\\haarcascade_frontalface_alt2.xml"
+#else
   "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_default.xml",
   "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_alt.xml",
   "C:\\OpenCV2.4.11\\build\\share\\OpenCV\\haarcascades\\haarcascade_frontalface_alt2.xml"
+#endif
 };
 
 enum _FaceState
@@ -197,7 +206,9 @@ int main(int argc, char **argv)
                     HRESULT hResult1 = pCoordinateMapper->MapCameraPointToColorSpace(leftup_cam, &leftup_color);
                     HRESULT hResult2 = pCoordinateMapper->MapCameraPointToColorSpace(rightdown_cam, &rightdown_color);
 
-                    if (SUCCEEDED(hResult1) && SUCCEEDED(hResult2))
+                    if (SUCCEEDED(hResult1) && SUCCEEDED(hResult2) &&
+                      std::abs(leftup_cam.Z) >= std::numeric_limits<float>::min() &&
+                      std::abs(rightdown_cam.Z) >= std::numeric_limits<float>::min())
                     {
                       cv::Point leftup(
                         (leftup_color.X < 0 ? 0 : leftup_color.X),
