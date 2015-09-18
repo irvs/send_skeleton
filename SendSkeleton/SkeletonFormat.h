@@ -9,11 +9,12 @@ typedef struct
 {
   int id;
   Joint joints[JointType::JointType_Count];
+  int face_state;
 }
 SendingSkeleton;
 
 inline void makeSendingSkeleton(
-  int id, IBody& src, SendingSkeleton& dst)
+  int id, IBody& src, int face_state, SendingSkeleton& dst)
 {
   dst.id = id;
   Joint joint[JointType::JointType_Count];
@@ -25,6 +26,7 @@ inline void makeSendingSkeleton(
       dst.joints[i] = joint[i];
     }
   }
+  dst.face_state = face_state;
   return;
 }
 
@@ -52,7 +54,8 @@ inline size_t ConvertSendingSkeletonToJSON(const SendingSkeleton& in, char* out,
   std::stringstream ss;
   ss << "{" <<
     "\"id\":" << (int)in.id << "," <<
-    "\"joints\":" << "[" << joints_str << "]";
+    "\"joints\":" << "[" << joints_str << "]" << "," <<
+    "\"FaceState\":" << in.face_state;
   if (is_opened_calib_file)
   {
     ss << "," <<

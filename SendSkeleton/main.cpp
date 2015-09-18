@@ -237,7 +237,7 @@ int main(int argc, char **argv)
               }
               // Send Position by UDP protocol
               SendingSkeleton data;
-              makeSendingSkeleton(count, *pBody[count], data);
+              makeSendingSkeleton(count, *pBody[count], face_detected[count], data);
               instance.set(data);
             }
           }
