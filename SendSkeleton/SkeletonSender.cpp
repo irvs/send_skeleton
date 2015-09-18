@@ -113,7 +113,8 @@ void SkeletonSender::sendOnce()
   {
     data = queue.front();
     queue.pop();
-    std::cout << "sending skeleton:: ID -> " << data.id << std::endl;
+    std::cout << "sending skeleton:: ID -> " << data.id
+      << "\tFace state: " << data.face_state << std::endl;
     int len = ConvertSendingSkeletonToJSON(data, json, isOpened,
       tx, ty, tz, qx, qy, qz, qw);
     sendto(sockSend, json, len,

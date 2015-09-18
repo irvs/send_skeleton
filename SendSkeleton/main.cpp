@@ -218,7 +218,7 @@ int main(int argc, char **argv)
                     // Set state of face detection
                     if (faces.size() > 0)
                     {
-                      if (faces.size() > 1 && faces[0].width*0.5 > rightdown.x - leftup.x &&  faces[0].height*0.5 > rightdown.y - leftup.y)
+                      if (faces.size() == 1 && faces[0].width/0.5 > rightdown.x - leftup.x &&  faces[0].height/0.5 > rightdown.y - leftup.y)
                       {
                         face_detected[count] = FaceState_Detected;
                       }
