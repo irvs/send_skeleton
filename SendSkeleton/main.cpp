@@ -194,42 +194,45 @@ int main(int argc, char **argv)
                     rightdown_cam.Y -= face_size;
                     ColorSpacePoint leftup_color;
                     ColorSpacePoint rightdown_color;
-                    pCoordinateMapper->MapCameraPointToColorSpace(leftup_cam, &leftup_color);
-                    pCoordinateMapper->MapCameraPointToColorSpace(rightdown_cam, &rightdown_color);
+                    HRESULT hResult1 = pCoordinateMapper->MapCameraPointToColorSpace(leftup_cam, &leftup_color);
+                    HRESULT hResult2 = pCoordinateMapper->MapCameraPointToColorSpace(rightdown_cam, &rightdown_color);
 
-                    cv::Point leftup(
-                      (leftup_color.X < 0 ? 0 : leftup_color.X),
-                      (leftup_color.Y < 0 ? 0 : leftup_color.Y));
-                    cv::Point rightdown(
-                      (rightdown_color.X >= bufferMat.cols ? bufferMat.cols - 1 : rightdown_color.X),
-                      (rightdown_color.Y >= bufferMat.rows ? bufferMat.rows - 1 : rightdown_color.Y));
-
-                    cv::rectangle(bufferMat, leftup, rightdown, static_cast<cv::Scalar>(color[count]));
-                    face_detector.check(
-                      cv::Mat(bufferMat, cv::Rect(leftup.x, leftup.y, rightdown.x - leftup.x, rightdown.y - leftup.y)), faces);
-
-                    // View detection result
-                    for (size_t i = 0; i < faces.size(); i++)
+                    if (SUCCEEDED(hResult1) && SUCCEEDED(hResult2))
                     {
-                      cv::Point center(leftup.x + faces[i].x + faces[i].width*0.5, leftup.y + faces[i].y + faces[i].height*0.5);
-                      cv::ellipse(bufferMat, center, cv::Size(faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, cv::Scalar(255, 255, 255), 4, 8, 0);
-                    }
+                      cv::Point leftup(
+                        (leftup_color.X < 0 ? 0 : leftup_color.X),
+                        (leftup_color.Y < 0 ? 0 : leftup_color.Y));
+                      cv::Point rightdown(
+                        (rightdown_color.X >= bufferMat.cols ? bufferMat.cols - 1 : rightdown_color.X),
+                        (rightdown_color.Y >= bufferMat.rows ? bufferMat.rows - 1 : rightdown_color.Y));
 
-                    // Set state of face detection
-                    if (faces.size() > 0)
-                    {
-                      if (faces.size() == 1 && faces[0].width/0.5 > rightdown.x - leftup.x &&  faces[0].height/0.5 > rightdown.y - leftup.y)
+                      cv::rectangle(bufferMat, leftup, rightdown, static_cast<cv::Scalar>(color[count]));
+                      face_detector.check(
+                        cv::Mat(bufferMat, cv::Rect(leftup.x, leftup.y, rightdown.x - leftup.x, rightdown.y - leftup.y)), faces);
+
+                      // View detection result
+                      for (size_t i = 0; i < faces.size(); i++)
                       {
-                        face_detected[count] = FaceState_Detected;
+                        cv::Point center(leftup.x + faces[i].x + faces[i].width*0.5, leftup.y + faces[i].y + faces[i].height*0.5);
+                        cv::ellipse(bufferMat, center, cv::Size(faces[i].width*0.5, faces[i].height*0.5), 0, 0, 360, cv::Scalar(255, 255, 255), 4, 8, 0);
+                      }
+
+                      // Set state of face detection
+                      if (faces.size() > 0)
+                      {
+                        if (faces.size() == 1 && faces[0].width / 0.5 > rightdown.x - leftup.x &&  faces[0].height / 0.5 > rightdown.y - leftup.y)
+                        {
+                          face_detected[count] = FaceState_Detected;
+                        }
+                        else
+                        {
+                          face_detected[count] = FaceState_Inferred;
+                        }
                       }
                       else
                       {
-                        face_detected[count] = FaceState_Inferred;
+                        face_detected[count] = FaceState_Not_Detected;
                       }
-                    }
-                    else
-                    {
-                      face_detected[count] = FaceState_Not_Detected;
                     }
                   }
                   cv::circle(bufferMat, cv::Point(x, y), 5, static_cast<cv::Scalar>(color[count]));
