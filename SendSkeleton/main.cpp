@@ -207,11 +207,9 @@ int main(int argc, char **argv)
                     HRESULT hResult2 = pCoordinateMapper->MapCameraPointToColorSpace(rightdown_cam, &rightdown_color);
 
                     if (SUCCEEDED(hResult1) && SUCCEEDED(hResult2) &&
-                      leftup_color.X != NAN &&
-                      leftup_color.Y != NAN &&
-                      rightdown_color.X != NAN &&
-                      rightdown_color.Y != NAN &&
-                      std::abs(rightdown_cam.Z) >= std::numeric_limits<float>::min())
+                      std::abs(leftup_cam.Z) >= std::numeric_limits<float>::min() &&
+                      std::abs(rightdown_cam.Z) >= std::numeric_limits<float>::min() &&
+                      leftup_color.X < rightdown_color.X && leftup_color.Y < rightdown_color.Y)
                     {
                       cv::Point leftup(
                         (leftup_color.X < 0 ? 0 : leftup_color.X),
